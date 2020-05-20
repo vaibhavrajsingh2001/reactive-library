@@ -1,7 +1,12 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
+import React, { useState, useContext } from 'react';
+import BookContext from '../../context/GBooks/bookContext';
+import AlertContext from '../../context/alert/alertContext';
 
-const Search = ({ searchBooks,clearBooks, showClearBtn, showAlert}) => {
+const Search = () => {
+    const bookContext = useContext(BookContext);
+    const alertContext = useContext(AlertContext);
+    const { books, clearBooks, searchBooks } = bookContext;
+    const { showAlert } = alertContext;
 
     const [text, manageText] = useState('');
 
@@ -23,16 +28,9 @@ const Search = ({ searchBooks,clearBooks, showClearBtn, showAlert}) => {
                     <input type='text' name='text' placeholder='Search books...' value={text} onChange={onChange} />
                     <input type='submit' value='Search' className='btn btn-dark btn-block' />
                 </form>
-                {showClearBtn && <button className="btn btn-light btn-block" onClick={clearBooks}>Clear</button>}
+                {books.length > 0 && <button className="btn btn-light btn-block" onClick={clearBooks}>Clear</button>}
             </div>
         )
-}
-
-Search.propTypes = {
-    searchBooks: PropTypes.func.isRequired,
-    clearBooks: PropTypes.func.isRequired,
-    showClearBtn: PropTypes.bool.isRequired,
-    showAlert: PropTypes.func.isRequired,
 }
 
 export default Search

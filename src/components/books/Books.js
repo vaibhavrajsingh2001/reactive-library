@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import BookItem from './BookItem';
 import Spinner from '../layout/Spinner';
-import PropTypes from 'prop-types';
+import BookContext from '../../context/GBooks/bookContext';
 
-const Books = ({ loading, books }) => {
+const Books = () => {
+    const bookContext = useContext(BookContext);
+    const { loading, books } = bookContext;
 
         if(loading) {
             return <Spinner />
@@ -17,11 +19,6 @@ const Books = ({ loading, books }) => {
             </div>
         )
 
-}
-
-Books.propTypes = {
-    books: PropTypes.array.isRequired,
-    loading: PropTypes.bool.isRequired
 }
 
 const bookStyle = {

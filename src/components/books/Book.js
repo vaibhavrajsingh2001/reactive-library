@@ -1,10 +1,12 @@
-import React, { Fragment, useEffect } from 'react';
+import React, { Fragment, useEffect, useContext } from 'react';
 import { useParams } from "react-router";
-import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
+import BookContext from '../../context/GBooks/bookContext';
 import Spinner from '../layout/Spinner';
 
-const Book = ({ book, loading, getBook }) => {
+const Book = () => {
+    const bookContext = useContext(BookContext);
+    const { book, loading, getBook } = bookContext;
 
     // grab the book's id from the params in URL and pass
     // it to getBook function to fetch details
@@ -15,7 +17,7 @@ const Book = ({ book, loading, getBook }) => {
         // eslint-disable-next-line
     }, [id]);
 
-    // destructured to extract volumeInfo & accessInfo
+    // destructured to extract volumeInfo & accessInfo earlier
     // so that we can check if they have been retrieved
     const { volumeInfo, accessInfo } = book;
 
@@ -29,24 +31,22 @@ const Book = ({ book, loading, getBook }) => {
             <Link to='/' className='btn btn-light' style={{ width: 'auto', fontSize: 'small', padding: '3px' }}>Back to search</Link>
             <div className='card grid-2' style={{ fontSize: 'small', padding: '10px', border: '1px solid #ccc', borderRadius: '16px' }}>
                 <div>
-                    <h2>{title}</h2>{subtitle && <span>[{subtitle}]</span>}
+                    <h2>{title}</h2>{subtitle && <p>[{subtitle}]</p>}
                     <img src={imageLinks.small || imageLinks.thumbnail} alt='featured' style={{ width: '200px', border: 'solid 3px' }} />
                 </div>
                 <div>
-                    <Fragment>
+                    {description && <Fragment>
                         <h3>Description:</h3>
                         <br />
                         <p dangerouslySetInnerHTML={{ __html: description }} style={descriptionStyle}></p>
-                    </Fragment>
-
+                    </Fragment>}
                 </div>
             </div>
             <div className='card'>
                 <div className='badge badge-success'>{printedPageCount && pageCount && <p><b>Pages:</b> {printedPageCount} pages (with {pageCount} printed pages)</p>}</div>
-                <div className='badge badge-white'>ISBN_10: {industryIdentifiers[0].identifier}</div>
-                <div className='badge badge-white'>ISBN_13: {industryIdentifiers[1].identifier}</div>
-                {pdf && <a href={pdf.acsTokenLink} className="badge badge-light">PDF</a>}
-                {epub && <a href={epub.acsTokenLink} className="badge badge-light">EPUB</a>}
+                {typeof industryIdentifiers !== 'undefined' && <div className='badge badge-white'>ISBN_10: {industryIdentifiers[0].identifier}</div> && <div className='badge badge-white'>ISBN_13: {industryIdentifiers[1].identifier}</div>}
+                {pdf.isAvailable && <a href={pdf.acsTokenLink || epub.downloadLink} className="badge badge-light">PDF</a>}
+                {epub.isAvailable && <a href={epub.acsTokenLink || pdf.downloadLink} className="badge badge-light">EPUB</a>}
                 {typeof authors !== 'undefined' && <ul><b>Authors:</b>
                     {authors.map((el, index) => <li key={index}>{el}</li>)}
                 </ul>}
@@ -60,12 +60,6 @@ const Book = ({ book, loading, getBook }) => {
         </Fragment>
     } else return null;
 
-}
-
-Book.propTypes = {
-    loading: PropTypes.bool,
-    book: PropTypes.object.isRequired,
-    getBook: PropTypes.func.isRequired
 }
 
 const descriptionStyle = {

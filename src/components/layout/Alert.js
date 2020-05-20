@@ -1,11 +1,12 @@
-import React, { Component } from 'react'
+import React, { useContext } from 'react';
+import AlertContext from '../../context/alert/alertContext';
 
-export class Alert extends Component {
-    render() {
+const Alert = () => {
+    const alertContext = useContext(AlertContext);
 
-        const { alert, clearAlert } = this.props;
+        const { alert, clearAlert } = alertContext;
 
-        if (this.props.alert.msg) {
+        if (alert) {
             return (
                 <div className={`alert alert-${alert.type}`}>
                     <i className='fas fa-exclamation-triangle'></i> {alert.msg}
@@ -13,7 +14,6 @@ export class Alert extends Component {
                 </div>
             );
         } else return null;
-    }
 }
 
 const crossStyle = {
