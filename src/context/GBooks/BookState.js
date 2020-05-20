@@ -9,14 +9,6 @@ import {
     SET_LOADING
 } from '../types';
 
-let library_key;
-
-if(process.env.NODE_ENV !== 'production') {
-    library_key = process.env.REACT_APP_LIBRARY_KEY;
-} else {
-    library_key = process.env.LIBRARY_KEY;
-}
-
 const BookState = props => {
     const initialState = {
         books: [],
@@ -29,7 +21,7 @@ const BookState = props => {
     // Fetch books
     const searchBooks = async (text) => {
         manageLoading();
-        const res = await axios.get(`https://www.googleapis.com/books/v1/volumes?q=${text}&maxResults=20&key=${library_key}`);
+        const res = await axios.get(`https://www.googleapis.com/books/v1/volumes?q=${text}&maxResults=20`);
 
         if (res) {
             // sends res.data.items to bookReducer which adds it to state
@@ -43,7 +35,7 @@ const BookState = props => {
     // fetch single book volume
     const getBook = async (id) => {
         manageLoading();
-        const res = await axios.get(`https://www.googleapis.com/books/v1/volumes/${id}?key=${library_key}`);
+        const res = await axios.get(`https://www.googleapis.com/books/v1/volumes/${id}`);
         if(res){
             dispatch({
                 type: GET_BOOK,
