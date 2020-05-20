@@ -1,42 +1,38 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
-export class Search extends Component {
+const Search = ({ searchBooks,clearBooks, showClearBtn, showAlert}) => {
 
-    state = {
-        text: ''
-    };
+    const [text, manageText] = useState('');
 
-    static propTypes = {
-        searchBooks: PropTypes.func.isRequired,
-        clearBooks: PropTypes.func.isRequired,
-        showClearBtn: PropTypes.bool.isRequired,
-        showAlert: PropTypes.func.isRequired,
-    }
+    const onChange = (e) => manageText(e.target.value);
 
-    onChange = (e) => this.setState({ text: e.target.value });
-
-    onSubmit = (e) => {
+    const onSubmit = (e) => {
         e.preventDefault();
-        if(this.state.text){
-            this.props.searchBooks(this.state.text);
+        if(text){
+            searchBooks(text);
         } else {
-            this.props.showAlert('Enter some text to search!', 'light');
+            showAlert('Enter some text to search!', 'light');
         }
-        this.setState({ text: '' });
+        manageText('');
     }
 
-    render() {
         return (
             <div>
-                <form className='form' onSubmit={this.onSubmit}>
-                    <input type='text' name='text' placeholder='Search books...' value={this.state.text} onChange={this.onChange} />
+                <form className='form' onSubmit={onSubmit}>
+                    <input type='text' name='text' placeholder='Search books...' value={text} onChange={onChange} />
                     <input type='submit' value='Search' className='btn btn-dark btn-block' />
                 </form>
-                {this.props.showClearBtn && <button className="btn btn-light btn-block" onClick={this.props.clearBooks}>Clear</button>}
+                {showClearBtn && <button className="btn btn-light btn-block" onClick={clearBooks}>Clear</button>}
             </div>
         )
-    }
+}
+
+Search.propTypes = {
+    searchBooks: PropTypes.func.isRequired,
+    clearBooks: PropTypes.func.isRequired,
+    showClearBtn: PropTypes.bool.isRequired,
+    showAlert: PropTypes.func.isRequired,
 }
 
 export default Search

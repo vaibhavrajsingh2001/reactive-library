@@ -1,4 +1,4 @@
-import React, { Fragment, Component } from 'react';
+import React, { Fragment, useState, useEffect } from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import axios from 'axios';
 import Navbar from './components/layout/Navbar';
@@ -9,74 +9,78 @@ import About from './components/pages/About';
 import Book from './components/books/Book';
 import './App.css';
 
-class App extends Component {
+const App = () => {
 
-  state = {
-    books: [],
-    book: {},
-    loading: false,
-    alert: {}
-  }
+  const [books, manageBooks] = useState([]);
+  const [book, manageBook] = useState({});
+  const [loading, manageLoading] = useState(false);
+  const [alert, manageAlert] = useState({});
 
-  async componentDidMount() {
-    this.setState({ loading: true });
+  useEffect(() => {
+    async function fetchData() {
+       manageLoading(true);
     const res = await axios.get(`https://www.googleapis.com/books/v1/volumes?q=greek&maxResults=20&key=${process.env.REACT_APP_LIBRARY_KEY}`);
     // console.log(res.data.items);
-    this.setState({ books: res.data.items, loading: false });
-  };
+    manageBooks(res.data.items);
+    manageLoading(false);
+    }
+   fetchData();
+  }, []);
 
-  searchBooks = async (text) => {
-    this.setState({ loading: true });
+   const searchBooks = async (text) => {
+    manageLoading(true);
     const res = await axios.get(`https://www.googleapis.com/books/v1/volumes?q=${text}&maxResults=20&key=${process.env.REACT_APP_LIBRARY_KEY}`);
     if (res) {
-      this.setState({ books: res.data.items, loading: false });
+      manageBooks(res.data.items);
+      manageLoading(false);
     } else alert('Book not found!');
   };
 
-  getBook = async id => {
-    this.setState({ loading: true });
+  const getBook = async id => {
+    manageLoading(true);
     const res = await axios.get(`https://www.googleapis.com/books/v1/volumes/${id}?key=${process.env.REACT_APP_LIBRARY_KEY}`);
-    this.setState({ book: res.data, loading: false });
+    manageBook(res.data);
+    manageLoading(false);
     if(!res.data) alert('data not fetched')
   };
 
-  clearBooks = () => this.setState({ books: [], loading: false });
-
-  showAlert = (msg, type) => {
-    this.setState({ alert: { msg, type } });
-    setTimeout(() => this.setState({ alert: {} }), 2500);
+  const clearBooks = () => {
+    manageBooks([]);
+    manageLoading(false);
   };
 
-  clearAlert = () => {
-    this.setState({ alert: {} });
+  const showAlert = (msg, type) => {
+    manageAlert({ msg, type });
+    setTimeout(() => manageAlert({}), 2500);
   };
 
-  render() {
-    const { books, book, loading, alert } = this.state;
+  const clearAlert = () => {
+    manageAlert({});
+  };
+
 
     return (
       <Router>
         <div className="App">
           <Navbar />
           <div className='container'>
-            <Alert alert={alert} clearAlert={this.clearAlert} />
+            <Alert alert={alert} clearAlert={clearAlert} />
             <Switch>
               <Route exact path='/' render={props => (
                 <Fragment>
-                  <Search searchBooks={this.searchBooks} clearBooks={this.clearBooks} showClearBtn={books.length > 0 ? true : false} showAlert={this.showAlert} />
+                  <Search searchBooks={searchBooks} clearBooks={clearBooks} showClearBtn={books.length > 0 ? true : false} showAlert={showAlert} />
                   <Books loading={loading} books={books} />
                 </Fragment>
               )} />
               <Route exact path='/about' component={About} />
               <Route exact path='/book/:id' render={props => (
-                <Book { ...props } getBook={this.getBook} book={book} loading={loading} />
+                <Book { ...props } getBook={getBook} book={book} loading={loading} />
               )} />
             </Switch>
           </div>
         </div>
       </Router>
     );
-  }
 }
 
 export default App;
