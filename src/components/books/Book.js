@@ -18,39 +18,57 @@ export class Book extends Component {
     }
 
     render() {
-        const { volumeInfo } = this.props.book;
+        const { volumeInfo, accessInfo } = this.props.book;
         const { loading } = this.props;
 
         if (loading) return <Spinner />
 
-        if (volumeInfo) {
-            const { title, authors, description, industryIdentifiers, pageCount, printedPageCount, categories, averageRating, imageLinks } = volumeInfo;
+        if (volumeInfo && accessInfo) {
+            const { title, subtitle, authors, description, industryIdentifiers, pageCount, printedPageCount, categories, averageRating, imageLinks, previewLink } = volumeInfo;
+            const { pdf, epub } = accessInfo;
 
             return <Fragment>
                 <Link to='/' className='btn btn-light' style={{ width: 'auto', fontSize: 'small', padding: '3px' }}>Back to search</Link>
-                <div className="card grid-2" style={{ fontSize: 'small' }}>
+                <div className='card grid-2' style={{ fontSize: 'small', padding: '10px', border: '1px solid #ccc', borderRadius: '16px' }}>
                     <div>
-                        <img src={imageLinks.small || imageLinks.thumbnail} alt="featured" style={{ width: '200px', border: 'solid 3px' }} />
-                        <h2>{title}</h2>
-                        <p><b>Authors:</b> {authors}</p>
-                        <p><b>Pages:</b> {pageCount} pages (with {printedPageCount} printed pages)</p>
-                        <p><b>Rating:</b> {averageRating}</p>
-                        {typeof categories !== 'undefined' && <ul><b>Categories:</b>
-                            {categories.map(el => <li>{el}</li>)}
-                        </ul>}
+                        <h2>{title}</h2>{subtitle && <span>[{subtitle}]</span>}
+                        <img src={imageLinks.small || imageLinks.thumbnail} alt='featured' style={{ width: '200px', border: 'solid 3px' }} />
                     </div>
-                    <p><b>Description:</b><br /><p dangerouslySetInnerHTML={{ __html: description }}></p></p>
-                    <table>
-                        <thead><b>ISBN codes:</b></thead>
-                        <tbody>
-                            {industryIdentifiers.map(el => <tr><td><b>{el.type}:</b></td><td>{el.identifier}</td></tr>)}
-                        </tbody>
-                    </table>
+                    <div>
+                        <Fragment>
+                            <h3>Description:</h3>
+                            <br />
+                            <p dangerouslySetInnerHTML={{ __html: description }} style={descriptionStyle}></p>
+                        </Fragment>
+
+                    </div>
+                </div>
+                <div className='card'>
+                    <div className='badge badge-success'>{printedPageCount && pageCount && <p><b>Pages:</b> {printedPageCount} pages (with {pageCount} printed pages)</p>}</div>
+                    <div className='badge badge-white'>ISBN_10: {industryIdentifiers[0].identifier}</div>
+                    <div className='badge badge-white'>ISBN_13: {industryIdentifiers[1].identifier}</div>
+                    {pdf && <a href={pdf.acsTokenLink} className="badge badge-light">PDF</a>}
+                    {epub && <a href={epub.acsTokenLink} className="badge badge-light">EPUB</a>}
+                    {typeof authors !== 'undefined' && <ul><b>Authors:</b>
+                        {authors.map((el, index) => <li key={index}>{el}</li>)}
+                    </ul>}
+                    <br />
+                    {averageRating && <p><b>Rating:</b> {averageRating}/5</p>}
+                    {typeof categories !== 'undefined' && <ul><b>Categories:</b>
+                        {categories.map((el, index) => <li key={index} className='badge badge-white'>{el}</li>)}
+                    </ul>}
+                    {previewLink && <a href={previewLink} className='btn btn-primary my-1'>Preview here</a>}
                 </div>
             </Fragment>
         } else return null;
 
     }
+}
+
+const descriptionStyle = {
+    maxHeight: '300px',
+    overflow: 'scroll',
+    textOverflow: 'ellipsis'
 }
 
 export default Book
