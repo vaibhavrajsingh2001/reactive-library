@@ -7,13 +7,7 @@ import {
     CLEAR_FAV
 } from '../types';
 
-let library_key;
-
-if (process.env.NODE_ENV !== 'production') {
-    library_key = process.env.REACT_APP_LIBRARY_KEY;
-} else {
-    library_key = process.env.LIBRARY_KEY;
-}
+let library_key = process.env.REACT_APP_LIBRARY_KEY;
 
 const FavState = props => {
     const initialState = {
