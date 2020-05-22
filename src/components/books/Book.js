@@ -6,7 +6,7 @@ import Spinner from '../layout/Spinner';
 
 const Book = () => {
     const bookContext = useContext(BookContext);
-    const { book, loading, getBook } = bookContext;
+    const { book, loading, getBook, addFav } = bookContext;
 
     // grab the book's id from the params in URL and pass
     // it to getBook function to fetch details
@@ -19,7 +19,15 @@ const Book = () => {
 
     // destructured to extract volumeInfo & accessInfo earlier
     // so that we can check if they have been retrieved
-    const { volumeInfo, accessInfo } = book;
+    const { id: bookId, volumeInfo, accessInfo } = book;
+    let isFav = false;
+    const manageFav = () => {
+        if (!isFav) {
+            addFav(bookId);
+            console.log('Added to fav!');
+        }
+        isFav = !isFav;
+    }
 
     if (loading) return <Spinner />
 
@@ -28,8 +36,8 @@ const Book = () => {
         const { pdf, epub } = accessInfo;
 
         return <Fragment>
-            <Link to='/' className='btn btn-light' style={{ width: 'auto', fontSize: 'small', padding: '3px' }}>Back to search</Link>
-            <div className='card grid-2' style={{ fontSize: 'small', padding: '10px', border: '1px solid #ccc', borderRadius: '16px' }}>
+            <Link to='/' className='btn btn-light' style={{position: 'relative', left: '10px'}}>Back to search</Link>
+            <div className='card grid-2' style={{ fontSize: 'small', padding: '10px', border: '1px solid #ccc' }}>
                 <div>
                     <h2>{title}</h2>{subtitle && <p>[{subtitle}]</p>}
                     <img src={imageLinks.small || imageLinks.thumbnail} alt='featured' style={{ width: '200px', border: 'solid 3px' }} />
@@ -56,6 +64,7 @@ const Book = () => {
                     {categories.map((el, index) => <li key={index} className='badge badge-white'>{el}</li>)}
                 </ul>}
                 {previewLink && <a href={previewLink} className='btn btn-primary my-1'>Preview here</a>}
+                <div className='btn' onClick={manageFav}>Add to favourites</div>
             </div>
         </Fragment>
     } else return null;
@@ -64,8 +73,7 @@ const Book = () => {
 
 const descriptionStyle = {
     maxHeight: '300px',
-    overflow: 'scroll',
-    textOverflow: 'ellipsis'
+    overflow: 'scroll'
 }
 
 export default Book

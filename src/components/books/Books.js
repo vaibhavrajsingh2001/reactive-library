@@ -12,19 +12,13 @@ const Books = () => {
         }
 
         return (
-            <div style={bookStyle}>
+            <div className='grid-3'>
                 {books.map(book => (
                     <BookItem key={book.id} book={book} />
                 ))}
             </div>
         )
 
-}
-
-const bookStyle = {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(3, 1fr)',
-    gridGap: '1rem'
 }
 
 export default Books
