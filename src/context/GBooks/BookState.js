@@ -9,10 +9,13 @@ import {
     SET_LOADING
 } from '../types';
 
+const library_key = process.env.REACT_APP_LIBRARY_KEY;
+
 const BookState = props => {
     const initialState = {
         books: [],
         book: {},
+        favBooks: [],
         loading: false
     }
 
@@ -21,7 +24,7 @@ const BookState = props => {
     // Fetch books
     const searchBooks = async (text) => {
         manageLoading();
-        const res = await axios.get(`https://www.googleapis.com/books/v1/volumes?q=${text}&maxResults=20`);
+        const res = await axios.get(`https://www.googleapis.com/books/v1/volumes?q=${text}&maxResults=20&key=${library_key}`);
 
         if (res) {
             // sends res.data.items to bookReducer which adds it to state
@@ -35,13 +38,25 @@ const BookState = props => {
     // fetch single book volume
     const getBook = async (id) => {
         manageLoading();
-        const res = await axios.get(`https://www.googleapis.com/books/v1/volumes/${id}`);
-        if(res){
+        const res = await axios.get(`https://www.googleapis.com/books/v1/volumes/${id}?key=${library_key}`);
+        if (res) {
             dispatch({
                 type: GET_BOOK,
                 payload: res.data
             })
-        }else alert('data not fetched');
+        } else alert('data not fetched');
+    };
+
+    // add id of book to localstorage of fav book ids
+    const addFav = (id) => {
+        let modifiedFavBooks = [];
+        const data = JSON.parse(localStorage.getItem('favBooks'));
+        if(data){
+            modifiedFavBooks = data;
+        }
+        modifiedFavBooks.push(id);
+        modifiedFavBooks = [...new Set(modifiedFavBooks)]; // removes repeated books
+        localStorage.setItem('favBooks', JSON.stringify(modifiedFavBooks));
     };
 
     // clear books from view
@@ -61,10 +76,12 @@ const BookState = props => {
         value={{
             books: state.books,
             book: state.book,
+            favBooks: state.favBooks,
             loading: state.loading,
             searchBooks,
             clearBooks,
-            getBook
+            getBook,
+            addFav
         }}
     >
         {props.children}

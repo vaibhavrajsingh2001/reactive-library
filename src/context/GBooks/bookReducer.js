@@ -8,7 +8,7 @@ import {
 
 // action.apyload contains the data passed when dispatch was called
 export default (state, action) => {
-    switch(action.type) {
+    switch (action.type) {
         case SET_LOADING:
             return {
                 ...state,
@@ -25,7 +25,7 @@ export default (state, action) => {
                 ...state,
                 book: action.payload,
                 loading: false
-            }
+            };
         case CLEAR_BOOKS:
             return {
                 ...state,

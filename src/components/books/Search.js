@@ -26,9 +26,9 @@ const Search = () => {
             <div>
                 <form className='form' onSubmit={onSubmit}>
                     <input type='text' name='text' placeholder='Search books...' value={text} onChange={onChange} />
-                    <input type='submit' value='Search' className='btn btn-dark btn-block' />
+                    <input type='submit' value='Search' className='btn btn-dark' />
+                    {books.length > 0 && <button className="btn btn-danger" onClick={clearBooks}>Clear</button>}
                 </form>
-                {books.length > 0 && <button className="btn btn-light btn-block" onClick={clearBooks}>Clear</button>}
             </div>
         )
 }

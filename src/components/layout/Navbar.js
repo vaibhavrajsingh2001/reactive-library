@@ -11,6 +11,9 @@ const Navbar = ({ icon, title }) => {
 			</h1>
 			<ul>
 				<li>
+					<Link to='/fav'>Favourites</Link>
+				</li>
+				<li>
 					<Link to='/'>Home</Link>
 				</li>
 				<li>
