@@ -23,7 +23,7 @@ const Fav = () => {
             <Fragment>
                 <Link to='/' className='btn btn-light'>Back to search</Link>
                 {favBooks.length > 0 && <button className="btn btn-danger" onClick={clearAllFav}>Clear All</button>}
-                <div style={bookStyle}>
+                <div className='grid-3'>
                     {favBooks.map(book => (
                         <BookItem key={book.etag} book={book} removeFavBtn={true} />
                     ))}
@@ -31,17 +31,14 @@ const Fav = () => {
             </Fragment>
         )
     } else return (
-    <Fragment>
-        <div className='all-center'>No books in favourite.<br/><br/>Please search and add your favourite books!</div>    
-    </Fragment>
+        <Fragment>
+            <div className='all-center'>
+                No books in favourite.<br /><br />Please search and add your favourite books!
+                <img src='/noFav.png' alt='No fav books' style={{width:'200px'}}></img>
+            </div>
+        </Fragment>
     );
 
-}
-
-const bookStyle = {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(3, 1fr)',
-    gridGap: '1rem'
 }
 
 export default Fav
