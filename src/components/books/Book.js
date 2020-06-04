@@ -21,13 +21,16 @@ const Book = () => {
     // so that we can check if they have been retrieved
     const { id: bookId, volumeInfo, accessInfo } = book;
     let isFav = false;
-    const manageFav = () => {
+    const manageFav = (event) => {
         if (!isFav) {
             addFav(bookId);
             console.log('Added to fav!');
+            event.target.style.background = '#ad1d45';
+            event.target.style.color = '#e6f5ff';
+
         }
         isFav = !isFav;
-    }
+    };
 
     if (loading) return <Spinner />
 
@@ -40,7 +43,7 @@ const Book = () => {
             <div className='card grid-2' style={{ fontSize: 'small', padding: '10px', border: '1px solid #ccc' }}>
                 <div>
                     <h2>{title}</h2>{subtitle && <p>[{subtitle}]</p>}
-                    <img src={imageLinks.small || imageLinks.thumbnail} alt='featured' style={{ width: '200px', border: 'solid 3px' }} />
+                    <img src={imageLinks.smallThumbnail || imageLinks.thumbnail || imageLinks.small} alt='featured' style={{ width: '200px', border: 'solid 3px' }} />
                 </div>
                 <div>
                     {description && <Fragment>
@@ -72,8 +75,9 @@ const Book = () => {
 }
 
 const descriptionStyle = {
+    minHeight: '150px',
     maxHeight: '300px',
-    overflow: 'scroll'
+    overflow: 'auto'
 }
 
 export default Book
