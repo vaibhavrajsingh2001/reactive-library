@@ -9,8 +9,8 @@ const Alert = () => {
         if (alert) {
             return (
                 <div className={`alert alert-${alert.type}`}>
-                    <i className='fas fa-exclamation-triangle'></i> {alert.msg}
-                    <button className='btn' style={crossStyle} onClick={clearAlert} ><i className="fas fa-times-circle"></i></button>
+                    Error! {alert.msg}
+                    <button className='btn' style={crossStyle} onClick={clearAlert} >&times;</button>
                 </div>
             );
         } else return null;

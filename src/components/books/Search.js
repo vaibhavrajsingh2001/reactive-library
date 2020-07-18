@@ -25,8 +25,8 @@ const Search = () => {
         return (
             <div>
                 <form className='form' onSubmit={onSubmit}>
-                    <input type='text' name='text' placeholder='Search books...' value={text} onChange={onChange} />
-                    <input type='submit' value='Search' className='btn btn-dark' />
+                    <input type='text' name='text' placeholder='Search books...' aria-label='Search books' value={text} onChange={onChange} />
+                    <input type='submit' value='Search' aria-label='search button' className='btn btn-dark' />
                     {books.length > 0 && <button className="btn btn-danger" onClick={clearBooks}>Clear</button>}
                 </form>
             </div>
